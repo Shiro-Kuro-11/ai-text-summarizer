@@ -1,12 +1,22 @@
 # AI Text Summarizer
 
-## 概要
-OpenAI API を使って、入力テキストを要約するPythonスクリプトです。
+## これは何？
+OpenAI API を使って、テキストファイルの内容を要約する Python スクリプトです。
+venv（仮想環境）を使い、プロジェクトごとに依存関係を分離しています。
 
-## 使用技術
+## 使っている技術
 - Python 3.x
 - OpenAI API
+- python-dotenv
+- venv（仮想環境）
 
-## 使い方
-1. input.txt に要約したい文章を書く
-2. main.py を実行
+## 実行手順
+```bash
+# 初回のみ
+python -m venv venv
+venv\Scripts\activate
+python -m pip install -r requirements.txt
+
+# 毎回
+venv\Scripts\activate
+python main.py
