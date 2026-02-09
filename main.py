@@ -27,10 +27,7 @@ def parse_args():
 
     return parser.parse_args()
 
-def summarize_text(input_file: str, mode: str):
-    with open(input_file, "r", encoding="utf-8") as f:
-        text = f.read()
-
+def summarize_text(text: str, mode: str):
     if mode == "short":
         prompt = "次の文章を一文で日本語要約してください。"
     elif mode == "long":
@@ -56,5 +53,8 @@ if __name__ == "__main__":
 
     input_file = args.input
     mode = args.mode
+
+    with open(input_file, "r", encoding="utf-8") as f:
+        text = f.read()
 
     summarize_text(input_file, mode)
