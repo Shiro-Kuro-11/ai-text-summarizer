@@ -1,3 +1,5 @@
+# CLI entry point for AI text summarizer
+
 import os
 import argparse
 
