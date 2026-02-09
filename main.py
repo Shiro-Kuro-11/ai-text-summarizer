@@ -1,29 +1,60 @@
-from openai import OpenAI
 import os
+import argparse
+
+from openai import OpenAI
 from dotenv import load_dotenv
 
 load_dotenv()
 
 client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
-# ファイルを読む
-with open("input.txt", "r", encoding="utf-8") as f:
-    text = f.read()
+def parse_args():
+    parser = argparse.ArgumentParser(
+        description="Summarize text using OpenAI API"
+    )
 
-prompt = f"""
-以下の文章を、
-・箇条書き
-・重要なポイント3つ
-・エンジニア志望向け
-で要約してください。
+    parser.add_argument(
+        "input",
+        help="Input text file path"
+    )
 
-{text}
-"""
+    parser.add_argument(
+        "-m", "--mode",
+        choices=["normal", "short", "long", "bullet", "emoji"],
+        default="normal",
+        help="Summary mode (default: normal)"
+    )
 
-response = client.responses.create(
-    model="gpt-4.1-mini",
-    input=prompt
-)
+    return parser.parse_args()
 
-print("\n--- 要約結果 ---")
-print(response.output_text)
+def summarize_text(input_file: str, mode: str):
+    with open(input_file, "r", encoding="utf-8") as f:
+        text = f.read()
+
+    if mode == "short":
+        prompt = "次の文章を一文で日本語要約してください。"
+    elif mode == "long":
+        prompt = "次の文章を丁寧に日本語で要約してください。"
+    elif mode == "bullet":
+        prompt = "次の文章を日本語で箇条書き3点にまとめてください。"
+    elif mode == "emoji":
+        prompt = "次の文章を絵文字を使って楽しく日本語要約してください。"
+    else:
+        prompt = "次の文章を日本語で要約してください。"
+
+    response = client.responses.create(
+        model="gpt-4.1-mini",
+        input=f"{prompt}\n{text}"
+    )
+
+    print("\n--- 要約結果 ---")
+    print(response.output_text)
+
+
+if __name__ == "__main__":
+    args = parse_args()
+
+    input_file = args.input
+    mode = args.mode
+
+    summarize_text(input_file, mode)
