@@ -27,7 +27,12 @@ logging.basicConfig(
 # =========================
 load_dotenv()
 
-client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
+api_key = os.getenv("OPENAI_API_KEY")
+if not api_key:
+    logging.error("OPENAI_API_KEY が設定されていません")
+    exit(1)
+
+client = OpenAI(api_key=api_key)
 
 # =========================
 # 5. 関数定義
@@ -95,6 +100,9 @@ if __name__ == "__main__":
     try:
         with open(input_file, "r", encoding="utf-8") as f:
             text = f.read()
+        if not text.strip():
+            logging.error("入力ファイルが空です")
+            exit(1)
     except FileNotFoundError:
         logging.error(f"ファイルが見つかりません: {input_file}")
         exit(1)
@@ -103,7 +111,10 @@ if __name__ == "__main__":
     print("\n--- 要約結果 ---")
     print(summary)
 
-    with open("output.txt", "w", encoding="utf-8") as f:
+    name, ext = os.path.splitext(input_file)
+    output_file = f"{name}_summary.txt"
+
+    with open(output_file, "w", encoding="utf-8") as f:
         f.write(summary)
 
-    logging.info("output.txt に保存しました")
+    logging.info(f"{output_file} に保存しました")
