@@ -43,6 +43,11 @@ def parse_args():
     )
 
     parser.add_argument(
+        "-o", "--output",
+        help="Output file path (optional)"
+    )
+
+    parser.add_argument(
         "input",
         help="Input text file path"
     )
@@ -55,6 +60,23 @@ def parse_args():
     )
 
     return parser.parse_args()
+
+def read_input_file(path: str) -> str:
+    logging.info(f"入力ファイル: {path}")
+ 
+    try:
+        with open(path, "r", encoding="utf-8") as f:
+            text = f.read()
+   
+        if not text.strip():
+            logging.error("入力ファイルが空です")
+            exit(1)
+
+    except FileNotFoundError:
+        logging.error(f"ファイルが見つかりません: {path}")
+        exit(1)
+
+    return text
 
 def summarize_text(text: str, mode: str):
     logging.info(f"要約を開始します (mode={mode})")
@@ -95,24 +117,27 @@ if __name__ == "__main__":
     input_file = args.input
     mode = args.mode
 
-    logging.info(f"入力ファイル: {input_file}")
-
-    try:
-        with open(input_file, "r", encoding="utf-8") as f:
-            text = f.read()
-        if not text.strip():
-            logging.error("入力ファイルが空です")
-            exit(1)
-    except FileNotFoundError:
-        logging.error(f"ファイルが見つかりません: {input_file}")
-        exit(1)
-
+    text = read_input_file(input_file)
     summary = summarize_text(text, mode)
+
     print("\n--- 要約結果 ---")
     print(summary)
 
-    name, ext = os.path.splitext(input_file)
-    output_file = f"{name}_summary.txt"
+    if args.output:
+        output_file = args.output
+    else:
+        name, ext = os.path.splitext(input_file)
+        output_file = f"{name}_summary.txt"
+
+    counter = 1
+    base, ext = os.path.splitext(output_file)
+    new_output = output_file
+
+    while os.path.exists(new_output):
+        new_output = f"{base}_{counter}{ext}"
+        counter += 1
+    
+    output_file = new_output
 
     with open(output_file, "w", encoding="utf-8") as f:
         f.write(summary)
