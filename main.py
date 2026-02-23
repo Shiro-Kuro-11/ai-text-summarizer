@@ -43,6 +43,12 @@ def parse_args():
     )
 
     parser.add_argument(
+        "--debug",
+        action="store_true",
+        help="Enable debug logging"
+    )
+
+    parser.add_argument(
         "-o", "--output",
         help="Output file path (optional)"
     )
@@ -99,6 +105,11 @@ def summarize_text(text: str, mode: str):
         model="gpt-4.1-mini",
         input=f"{prompt}\n{text}"
     )
+
+        logging.debug("APIレスポンス取得完了")
+        logging.debug(f"入力文字数: {len(text)}")
+        logging.debug(f" モード: {mode}")
+
     except Exception as e:
         logging.error("OpenAI APIの呼び出しに失敗しました")
         logging.error(e)
@@ -113,6 +124,10 @@ def summarize_text(text: str, mode: str):
 # =========================
 if __name__ == "__main__":
     args = parse_args()
+
+    if args.debug:
+        logging.getLogger().setLevel(logging.DEBUG)
+        logging.debug("Debug mode enabled")
 
     input_file = args.input
     mode = args.mode
