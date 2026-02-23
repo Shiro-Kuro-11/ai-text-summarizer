@@ -117,3 +117,10 @@ AIと対話できた。エラーもあったが、一つずつ原因を調べて
 - 出力ファイルが未指定の場合、自動で _summary.txt を付与する処理を実装
 - 既存ファイルがある場合に上書きしないよう、os.path.exists() と while を用いた連番付与処理を追加
 - 保存処理の動作確認（複数回実行テスト）
+
+## Day10
+--debug オプションを追加し、デバッグモードを実装
+-loggingレベルを動的に切り替える処理を追加（INFO / DEBUG）
+-summarize_text() 内に debugログを追加
+-try / except 構造とインデントの重要性を再確認
+-命名規則（snake_case / PascalCase / UPPER_CASE）について理解
